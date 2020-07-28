@@ -5,7 +5,7 @@ const CourseDetail = ({ courseToShow }) => {
     console.log("COURSEDETAIL COMPONENT RENDER");
 
     return (
-        <div>
+        <div className="container">
             {courseToShow.map((courseTab, outerIndex) => {
                 return (
                     <div key={outerIndex}>

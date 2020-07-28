@@ -3,7 +3,7 @@ import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import axios from 'axios';
 import { API_ENDPOINT, REACT_APP_URI } from '../index.js';
 import courseData from '../tempCourseData.js';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, useHistory, useRouteMatch } from 'react-router-dom';
 import CoursesNavbar from './CoursesNavbar';
 import CourseDetail from './CourseDetail';
 import CourseForm from './CourseForm';
@@ -11,12 +11,20 @@ import CourseForm from './CourseForm';
 const Profile = () => {
 
     console.log("PROFILE COMPONENT RENDER");
+    
+    const history = useHistory();
+    const { url, path } = useRouteMatch();
 
+    // auth0 hooks
     const { user, logout, getAccessTokenSilently } = useAuth0();
+    // access token to propogate to children components
     const [accessToken, setAccessToken] = useState(null);
-    //const [courseMetaData, setCourseMetaData] = useState([]);
+    // user's courses and their data
     const [courseMetaData, setCourseMetaData] = useState(courseData);
+    // toggle which course data to show in CourseDetail component
     const [courseToShow, setCourseToShow] = useState([])
+    // toggle which course tab to activate 
+    const [activeCourse, setActiveCourse] = useState("");
 
     // FETCH ACCESS TOKEN TO ACCESS PROTECTED ROUTES
     // useEffect(() => {
@@ -30,12 +38,10 @@ const Profile = () => {
     //     });
     // }, [getAccessTokenSilently]);
 
-
-    function courseDetailToShow(event) {
-        setCourseToShow(courseMetaData.find(o => o._id === event.target.id).tabs);
-    }
-
+    // Functionality for adding a new course 
     function addNewCourse(newCourseName) {
+
+        // create empty template 
         const newCourse = {
             _id: `${(courseMetaData.length + 1)}`,
             course_name: newCourseName,
@@ -50,23 +56,28 @@ const Profile = () => {
                 }
             ]
         };
-        setCourseMetaData(prevMetaData => [...prevMetaData, newCourse]);
+
+        // update course meta data, and activate and show new course tab
+        setCourseMetaData(prevMetaData => {
+            setActiveCourse(newCourse._id);
+            setCourseToShow(newCourse.tabs);
+            return [...prevMetaData, newCourse]
+        });
+
     }
     
     return (
         <div>
-            <Router>
-                <CoursesNavbar courseMetaData={courseMetaData} courseDetailToShow={courseDetailToShow} />
-                <Switch>
-                    <Route path="/courseDetail">
-                        <CourseDetail courseToShow={courseToShow} />
-                    </Route>
-                    <Route path="/courseForm">
-                        <CourseForm addNewCourse={addNewCourse} />
-                    </Route>
-                </Switch>
-            </Router>
-            
+            <CoursesNavbar 
+                courseMetaData={courseMetaData} 
+                setCourseToShow={setCourseToShow}
+                activeCourse={activeCourse}
+                setActiveCourse={setActiveCourse} 
+            />
+            <Switch>
+                <Route path={`${path}/courseDetail`} component={() => <CourseDetail courseToShow={courseToShow} />} />
+                <Route path={`${path}/courseForm`} component={() => <CourseForm addNewCourse={addNewCourse} />} />
+            </Switch>
             
             User email: {user.email} <br />
             <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
