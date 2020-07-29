@@ -12,8 +12,7 @@ const Profile = () => {
 
     console.log("PROFILE COMPONENT RENDER");
     
-    const history = useHistory();
-    const { url, path } = useRouteMatch();
+    const { path } = useRouteMatch();
 
     // auth0 hooks
     const { user, logout, getAccessTokenSilently } = useAuth0();
@@ -45,43 +44,42 @@ const Profile = () => {
         const newCourse = {
             _id: `${(courseMetaData.length + 1)}`,
             course_name: newCourseName,
-            tabs: [
-                {
-                    tab_name: "HOMEWORK",
-                    tab_list: []
-                },
-                {
-                    tab_name: "QUIZZES/TESTS",
-                    tab_list: []
-                }
-            ]
+            tabs: [{
+                tab_name: "HOMEWORK",
+                tab_list: []
+            },
+            {
+                tab_name: "QUIZZES/TESTS",
+                tab_list: []
+            }]
         };
 
-        // update course meta data, and activate and show new course tab
+        // update course meta data, then activate and show new course tab
         setCourseMetaData(prevMetaData => {
-            setActiveCourse(newCourse._id);
-            setCourseToShow(newCourse.tabs);
+            setActiveCourse(newCourse._id);         // For Navbar UI
+            setCourseToShow(newCourse.tabs);        // For Body UI
             return [...prevMetaData, newCourse]
         });
 
     }
     
     return (
-        <div>
-            <CoursesNavbar 
-                courseMetaData={courseMetaData} 
-                setCourseToShow={setCourseToShow}
-                activeCourse={activeCourse}
-                setActiveCourse={setActiveCourse} 
-            />
-            <Switch>
-                <Route path={`${path}/courseDetail`} component={() => <CourseDetail courseToShow={courseToShow} />} />
-                <Route path={`${path}/courseForm`} component={() => <CourseForm addNewCourse={addNewCourse} />} />
-            </Switch>
-            
-            User email: {user.email} <br />
-            <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
-        </div> 
+                <div className="panel with-nav-tabs panel-default">
+                    <CoursesNavbar 
+                        courseMetaData={courseMetaData} 
+                        setCourseToShow={setCourseToShow}
+                        activeCourse={activeCourse}
+                        setActiveCourse={setActiveCourse} 
+                    />
+                    <div className="tab-content">
+                        <Switch>
+                            <Route path={`${path}/courseDetail`} component={() => <CourseDetail courseToShow={courseToShow} />} />
+                            <Route path={`${path}/courseForm`} component={() => <CourseForm addNewCourse={addNewCourse} />} />
+                        </Switch>
+                    </div>         
+                    User email: {user.email} <br />
+                    <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
+                </div>
     )
 }
 

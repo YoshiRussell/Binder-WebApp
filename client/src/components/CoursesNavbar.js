@@ -10,15 +10,15 @@ const CoursesNavbar = ({ courseMetaData, setCourseToShow, activeCourse, setActiv
 
     const renderCourses = courseMetaData.map((course, index) => {
         return (
-            <li className="nav-item" key={index}>
+            <li key={index}>
                 <Link 
                     id={course._id}
                     onClick={e => {
                         setCourseToShow(courseMetaData.find(course => course._id === e.target.id).tabs);
                         setActiveCourse(e.target.id);
                     }}
-                    className={course._id === activeCourse ? "nav-link active" : "nav-link"}
-                    style={course._id === activeCourse ? {backgroundColor: "white", color: "black"} : {backgroundColor: "LightGrey", color: "black"}}
+                    className={course._id === activeCourse ? "active" : ""}
+                    style={course._id === activeCourse ? {backgroundColor: 'white'} : null }
                     to={`${url}/courseDetail`}>
                     {course.course_name}
                 </Link>
@@ -27,21 +27,21 @@ const CoursesNavbar = ({ courseMetaData, setCourseToShow, activeCourse, setActiv
     });
 
     return (
-        <nav>
-            <ul className="nav nav-tabs nav-fill">
+        <div className="panel-heading">
+            <ul className="nav nav-tabs">
                 {renderCourses}
-                <li className="nav-item">
+                <li>
                         <Link 
                             id="add_course"
                             onClick={e => setActiveCourse(e.target.id)}
-                            className={activeCourse === "add_course" ? "nav-link active" : "nav-link"}
-                            style={activeCourse === "add_course" ? {backgroundColor: "white"} : {backgroundColor: "LightGrey"}}
+                            className={activeCourse === "add_course" ? "active" : ""}
+                            style={activeCourse === "add_course" ? {backgroundColor: '#ddd'} : null }
                             to={`${url}/courseForm`}>
                             Add Course +
                         </Link>
                 </li>
             </ul>
-        </nav>
+        </div>
     )
 }
 

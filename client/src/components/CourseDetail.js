@@ -1,21 +1,15 @@
 import React from 'react';
+import Tab from './Tab';
 
 const CourseDetail = ({ courseToShow }) => {
 
     console.log("COURSEDETAIL COMPONENT RENDER");
 
     return (
-        <div className="container">
+        <div className="tab-pane active">
             {courseToShow.map((courseTab, outerIndex) => {
                 return (
-                    <div key={outerIndex}>
-                        <h1>{courseTab.tab_name}</h1>
-                        <ul>
-                            {courseTab.tab_list.map((desc, innerIndex) => {
-                                return <li key={innerIndex}>{desc}</li>
-                            })}
-                        </ul> 
-                    </div>
+                    <Tab key={outerIndex} tab_name={courseTab.tab_name} tab_list={courseTab.tab_list} />
                 )
             })}
         </div>

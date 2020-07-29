@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect, useRouteMatch, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const CourseForm = ({ addNewCourse }) => {
 
+    console.log("COURSE FORM COMPONENT RENDERED");
+
     const [newCourse, setNewCourse] = useState("");
     const history = useHistory();
-
-    useEffect(() => {
-        console.log("mounted");
-        return () => {
-            console.log("unmounted")
-        }},[]);
 
     return (
         
