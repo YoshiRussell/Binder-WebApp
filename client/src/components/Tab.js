@@ -1,10 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 
-const Tab = ({ tab_name, tab_list }) => {
+const Tab = ({ tab_name, tab_list, propogateUpdate, showThisList }) => {
 
-    const [showList, toggleShowList] = useState(false);
+    console.log("TAB RENDER");
+    
+    const [showList, toggleShowList] = useState(showThisList);
+    const [taskDescription, setTaskDescription] = useState("");
+    const [tabList, updateTabList] = useState(tab_list);
+    const mounted = useRef(true);
 
+    function handleSubmit() {
+        console.log("inside handleSubmit");
+        updateTabList(prevTabList => {
+            return [...prevTabList, taskDescription]
+        });
+        setTaskDescription("");
+    }
 
+    useEffect(() => {
+        if (mounted.current) mounted.current = false;
+        else propogateUpdate(tab_name, tabList); 
+    }, [tabList])
+
+    useEffect(() => {
+        console.log("mounting tab");
+        return () => {
+            console.log("unmounting tabs");
+        }     
+    }, []);
 
     return (
         <div className="tab_container">
@@ -12,18 +35,29 @@ const Tab = ({ tab_name, tab_list }) => {
                     onClick={() => toggleShowList(prevStatus => !prevStatus)}>
                 <h3>{tab_name}</h3>
             </button>
-            {showList && tab_list.length > 0 ? (
-                <ul>
-                    {tab_list.map((desc, index) => {
-                        return <li key={index}>{desc}</li>
-                    })}
-                </ul>
+            {showList ? (
+                <div>
+                    {tabList.length > 0 ? (
+                        <ul>
+                            {tabList.map((desc, index) => {
+                                return <li key={index}>{desc}</li>
+                            })}
+                        </ul>
+                    ) : (
+                        <p>No tasks yet o:</p>
+                    )}  
+                    <div className="add-task-row">
+                        <input 
+                            type="text"
+                            value={taskDescription}
+                            placeholder="Add new task"
+                            onChange={e => setTaskDescription(e.target.value)} 
+                        />
+                        <button onClick={e => handleSubmit()}>Add Detail</button>
+                    </div>
+                </div>
             ) : (
-                showList ? (
-                    <p>No tasks yet o:</p>
-                ) : (
-                    null
-                )
+                null
             )}
         </div>
     )

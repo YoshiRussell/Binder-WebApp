@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Switch, Route, useHistory, useRouteMatch } fro
 import CoursesNavbar from './CoursesNavbar';
 import CourseDetail from './CourseDetail';
 import CourseForm from './CourseForm';
+import { useCourseMVC } from '../hooks/useCourseMVC';
 
 const Profile = () => {
 
@@ -14,17 +15,20 @@ const Profile = () => {
     
     const { path } = useRouteMatch();
 
+    useEffect(() => {
+        console.log("mounting profile");
+        return () => {
+            console.log("unmounting profile");
+        }
+    }, []);
+
     // auth0 hooks
     const { user, logout, getAccessTokenSilently } = useAuth0();
     // access token to propogate to children components
     const [accessToken, setAccessToken] = useState(null);
-    // user's courses and their data
-    const [courseMetaData, setCourseMetaData] = useState(courseData);
-    // toggle which course data to show in CourseDetail component
-    const [courseToShow, setCourseToShow] = useState([])
-    // toggle which course tab to activate 
-    const [activeCourse, setActiveCourse] = useState("");
-
+    // create a custom hook that handles the four hooks above
+    const [courseModel, updateCourseModel, updateCourseView, courseView, listView, setListView] = useCourseMVC();
+    
     // FETCH ACCESS TOKEN TO ACCESS PROTECTED ROUTES
     // useEffect(() => {
     //     getAccessTokenSilently({
@@ -37,49 +41,52 @@ const Profile = () => {
     //     });
     // }, [getAccessTokenSilently]);
 
+
     // Functionality for adding a new course 
     function addNewCourse(newCourseName) {
+        const courseID = `${courseModel.length + 1}`;
+        const value = newCourseName;
+        updateCourseModel('newCourse', { courseID, value });
+    }
 
-        // create empty template 
-        const newCourse = {
-            _id: `${(courseMetaData.length + 1)}`,
-            course_name: newCourseName,
-            tabs: [{
-                tab_name: "HOMEWORK",
-                tab_list: []
-            },
-            {
-                tab_name: "QUIZZES/TESTS",
-                tab_list: []
-            }]
-        };
-
-        // update course meta data, then activate and show new course tab
-        setCourseMetaData(prevMetaData => {
-            setActiveCourse(newCourse._id);         // For Navbar UI
-            setCourseToShow(newCourse.tabs);        // For Body UI
-            return [...prevMetaData, newCourse]
-        });
-
+    // Functionality for adding a new detail
+    function updateTabList(courseID, tabName, newList) {
+        const value = newList;
+        updateCourseModel('newDetail', { courseID, value, tabName })
     }
     
     return (
-                <div className="panel with-nav-tabs panel-default">
-                    <CoursesNavbar 
-                        courseMetaData={courseMetaData} 
-                        setCourseToShow={setCourseToShow}
-                        activeCourse={activeCourse}
-                        setActiveCourse={setActiveCourse} 
+        <div className="panel with-nav-tabs panel-default">
+            <CoursesNavbar 
+                courseModel={courseModel}
+                courseView={courseView}
+                updateCourseView={updateCourseView}
+                setListView={setListView}
+            />
+            <div className="tab-content">
+                <Switch>
+                    <Route 
+                        path={`${path}/courseDetail`} 
+                        component={() => <CourseDetail 
+                                            courseModel={courseModel}
+                                            courseToShow={courseView}
+                                            propogateUpdate={updateTabList}
+                                            showList={listView}
+                                         />
+                        } 
                     />
-                    <div className="tab-content">
-                        <Switch>
-                            <Route path={`${path}/courseDetail`} component={() => <CourseDetail courseToShow={courseToShow} />} />
-                            <Route path={`${path}/courseForm`} component={() => <CourseForm addNewCourse={addNewCourse} />} />
-                        </Switch>
-                    </div>         
-                    User email: {user.email} <br />
-                    <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
-                </div>
+                    <Route 
+                        path={`${path}/courseForm`} 
+                        component={() => <CourseForm 
+                                            addNewCourse={addNewCourse} 
+                                         />
+                        } 
+                    />
+                </Switch>
+            </div>         
+            User email: {user.email} <br />
+            <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
+        </div>
     )
 }
 
