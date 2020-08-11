@@ -1,34 +1,44 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import useAPI from '../hooks/useAPI';
+import { API_ENDPOINT } from '../index.js';
 
-const Tab = ({ tab_name, tab_list, propogateUpdate, showThisList }) => {
+const Tab = ({ courseID, tab_name, tab_list, accessToken }) => {
 
     console.log("TAB RENDER");
     
-    const [showList, toggleShowList] = useState(showThisList);
+    const {
+        postRequest
+    } = useAPI();
+
+    // * tab states
+    const [showList, toggleShowList] = useState(false);
     const [taskDescription, setTaskDescription] = useState("");
     const [tabList, updateTabList] = useState(tab_list);
-    const mounted = useRef(true);
 
-    function handleSubmit() {
-        console.log("inside handleSubmit");
-        updateTabList(prevTabList => {
-            return [...prevTabList, taskDescription]
-        });
-        setTaskDescription("");
+
+    // * update tab list view when new detail is added
+    function handleSubmit() {        
+        if (taskDescription !== "") {
+            updateTabList(prevTabList => {
+                return [...prevTabList, taskDescription]
+            });
+            const requestBody = { desc: taskDescription, tabName: tab_name };
+            postRequest(`${API_ENDPOINT}/courses/courseDetails/${courseID}`, 
+                        requestBody,
+                        false,
+                        accessToken);
+            setTaskDescription("");
+        }   
     }
 
-    useEffect(() => {
-        if (mounted.current) mounted.current = false;
-        else propogateUpdate(tab_name, tabList); 
-    }, [tabList])
 
-    useEffect(() => {
-        console.log("mounting tab");
-        return () => {
-            console.log("unmounting tabs");
-        }     
-    }, []);
+    // * create the tab list view
+    const tabListView = tabList.map((desc, index) => {
+        return <li key={index}>{desc}</li>
+    });
 
+
+    // * JSX view
     return (
         <div className="tab_container">
             <button className={showList ? "tab_name_on" : "tab_name_off"}
@@ -37,15 +47,7 @@ const Tab = ({ tab_name, tab_list, propogateUpdate, showThisList }) => {
             </button>
             {showList ? (
                 <div>
-                    {tabList.length > 0 ? (
-                        <ul>
-                            {tabList.map((desc, index) => {
-                                return <li key={index}>{desc}</li>
-                            })}
-                        </ul>
-                    ) : (
-                        <p>No tasks yet o:</p>
-                    )}  
+                    {tabList.length > 0 ? (<ul>{tabListView}</ul>) : (<p>No tasks yet o:</p>)}  
                     <div className="add-task-row">
                         <input 
                             type="text"

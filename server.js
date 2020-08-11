@@ -7,8 +7,8 @@ require('dotenv').config();
 
 /** Create Server */
 const app = express();
-const port = process.env.PORT || 8000;
-const serverAudience = app.get('env') === 'production' ? 'deployed url' : 'http://localhost:8000';
+const port = process.env.PORT || 8080;
+const serverAudience = app.get('env') === 'production' ? 'deployed url' : 'http://localhost:8080';
 
 /** Middleware */
 app.use(cors());
@@ -18,7 +18,8 @@ app.use(express.json());
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, 
                         useCreateIndex: true,
-                        useUnifiedTopology: true});
+                        useUnifiedTopology: true,
+                        useFindAndModify: false });
 const connection = mongoose.connection;
 connection.once('open', () => {
     console.log('MongoDB database connection established successfully.');
@@ -31,11 +32,12 @@ const jwtCheck = jwt({
         rateLimit: true,
         jwksRequestsPerMinute: 5,
         jwksUri: 'https://dev-lkenkzaj.us.auth0.com/.well-known/jwks.json'
-    }), 
-    audience: `${serverAudience}`,
-    issuer: 'https://dev-lkenkzaj.us.auth0.com/',
-    algorithms: ['RS256']
+  }),
+  audience: 'http://localhost:8080/',
+  issuer: 'https://dev-lkenkzaj.us.auth0.com/',
+  algorithms: ['RS256']
 });
+
 
 /** Serve static assets if in production  */
 if (app.get('env') === 'production') {
@@ -49,6 +51,8 @@ if (app.get('env') === 'production') {
 
 /** Routes */
 const coursesRoute = require('./routes/courses');
-app.use('/api/courses', coursesRoute);
+const userRoute = require('./routes/user');
+app.use('/api/user', jwtCheck, userRoute);
+app.use('/api/courses', jwtCheck, coursesRoute);
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));

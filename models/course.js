@@ -2,13 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
-    course_name: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    tabs: [{
+    details: [{
         tab_name: {
             type: String, 
             required: true, 
@@ -21,7 +15,4 @@ const courseSchema = new Schema({
 
 const Course = mongoose.model('Course', courseSchema);
 
-module.exports = {
-    Course,
-    courseSchema
-};
+module.exports = Course;
