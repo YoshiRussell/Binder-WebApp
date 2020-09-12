@@ -6,7 +6,7 @@ import { API_ENDPOINT } from '../index.js';
 
 const CourseDetail = ({ courseID, accessToken }) => {
     console.log("COURSEDETAIL COMPONENT RENDER");
-
+    console.log(`COURSEDETAIL ID: ${courseID}`);
     const {
         isLoading,
         error,
@@ -15,20 +15,18 @@ const CourseDetail = ({ courseID, accessToken }) => {
     } = useAPI();
  
     useEffect(() => {
-        let isCancelled = false;
-        if (!isCancelled) getRequest(`${API_ENDPOINT}/api/courses/courseDetail/${courseID}`, accessToken);
+        //let isCancelled = false;
+        //if (!isCancelled) getRequest(`${API_ENDPOINT}/api/courses/courseDetail/${courseID}`, accessToken);
+        console.log("INSIDE COURSEDETAIL USEEFFECT");
+        getRequest(`${API_ENDPOINT}/api/courses/courseDetail/${courseID}`, accessToken);
         return () => {
             console.log("course detail unmounted");
-            isCancelled = true;
+            //isCancelled = true;
         }
-    }, [])
-
+    }, [courseID])
 
     return (
         <div>
-            { isLoading && 
-                <h3>Loading Course's data...</h3>
-            }
             { error &&
                 <h3>Error loading Course's data</h3>
             }
@@ -41,6 +39,7 @@ const CourseDetail = ({ courseID, accessToken }) => {
                                 courseID={courseID}
                                 tab_name={courseTab.tab_name} 
                                 tab_list={courseTab.tab_list} 
+                                accessToken={accessToken}
                             />
                         )
                     })}

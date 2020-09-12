@@ -24,7 +24,7 @@ const useAPI = () => {
         try {
             setFetchingState({ ...fetchingState, isLoading: true });
             const response = await axios.get(url, headerConfig);
-            console.log("RESPONSE DATA: " + response.data);
+            console.log("RESPONSE DATA: " + JSON.stringify(response.data));
             setFetchingState({ ...fetchingState, isLoading: false, data: response.data });
         } catch(error) {
             setFetchingState({ ...fetchingState, isLoading: false, error: error });
@@ -33,7 +33,7 @@ const useAPI = () => {
 
     async function postRequest(url, requestBody, returnResponse, accessToken) {
         const headerConfig = setConfig(accessToken);
-
+        console.log(accessToken);
         try {
             if (returnResponse) {
                 setFetchingState({ ...fetchingState, isLoading: true });

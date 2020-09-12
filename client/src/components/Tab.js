@@ -23,7 +23,7 @@ const Tab = ({ courseID, tab_name, tab_list, accessToken }) => {
                 return [...prevTabList, taskDescription]
             });
             const requestBody = { desc: taskDescription, tabName: tab_name };
-            postRequest(`${API_ENDPOINT}/courses/courseDetails/${courseID}`, 
+            postRequest(`${API_ENDPOINT}/api/courses/courseDetail/${courseID}`, 
                         requestBody,
                         false,
                         accessToken);

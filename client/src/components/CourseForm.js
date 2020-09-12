@@ -25,11 +25,11 @@ const CourseForm = ({ setActiveCourse, setUserCourses, accessToken }) => {
                 await postRequest(`${API_ENDPOINT}/api/user/courses/${user.sub}`, reqBody, true, accessToken)
                 setActiveCourse(data);
                 setUserCourses(prevUserCourses => {
-                    const newCourseList = {...prevUserCourses}
+                    const newCourseList = {...prevUserCourses};
                     newCourseList[data] = newCourseName;
                     return newCourseList;
                 });
-                
+                history.replace('/profile/courseDetail');
             } catch(error) {
                 console.log("Error getting new courseID");
             }
@@ -53,7 +53,7 @@ const CourseForm = ({ setActiveCourse, setUserCourses, accessToken }) => {
                     onClick={e => {
                         e.preventDefault(); 
                         addNewCourse(newCourse);
-                        history.replace('/profile/courseDetail');
+                        //history.replace('/profile/courseDetail');
                     }}>
                     ADD COURSE
                 </button>
