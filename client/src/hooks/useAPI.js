@@ -20,7 +20,6 @@ const useAPI = () => {
     async function getRequest(url, accessToken) {
         console.log("INSIDE GET REQUEST");
         const headerConfig = setConfig(accessToken);
-
         try {
             setFetchingState({ ...fetchingState, isLoading: true });
             const response = await axios.get(url, headerConfig);

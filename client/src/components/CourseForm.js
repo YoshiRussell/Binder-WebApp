@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import useAPI from '../hooks/useAPI';
 import { useAuth0 } from '@auth0/auth0-react';
 import { API_ENDPOINT } from '../index.js';
 
-const CourseForm = ({ setActiveCourse, setUserCourses, accessToken }) => {
+const CourseForm = ({ setActiveCourse, setUserCourses, activateCourseForm, accessToken }) => {
     console.log("COURSE FORM COMPONENT RENDERED");
 
     const { user } = useAuth0();
@@ -16,26 +16,40 @@ const CourseForm = ({ setActiveCourse, setUserCourses, accessToken }) => {
     } = useAPI();
     const [newCourse, setNewCourse] = useState("");
     const history = useHistory();
+    const mounted = useRef(false);
 
     function addNewCourse(newCourseName) {
         (async() => {
             try {
-                //const newCourseID = await cloudDB.postNewCourseToDB(newCourseName); 
                 const reqBody = { courseName: newCourseName };
-                await postRequest(`${API_ENDPOINT}/api/user/courses/${user.sub}`, reqBody, true, accessToken)
-                setActiveCourse(data);
-                setUserCourses(prevUserCourses => {
-                    const newCourseList = {...prevUserCourses};
-                    newCourseList[data] = newCourseName;
-                    return newCourseList;
-                });
-                history.replace('/profile/courseDetail');
+                await postRequest(`${API_ENDPOINT}/api/user/courses/${user.sub}`, reqBody, true, accessToken);
+                // console.log("NEW COURSE DATA: " + JSON.stringify(data));
+                // setActiveCourse(data);
+                // setUserCourses(prevUserCourses => {
+                //     const newCourseList = {...prevUserCourses};
+                //     newCourseList[data] = newCourseName;
+                //     return newCourseList;
+                // });
             } catch(error) {
                 console.log("Error getting new courseID");
             }
-        })();
-       
+        })();  
     }
+
+    useEffect(() => {
+        if (mounted.current) {
+            console.log("NEW COURSE DATA: " + JSON.stringify(data));
+            setActiveCourse(data.courseID);
+            setUserCourses(prevUserCourses => {
+                const newCourseList = {...prevUserCourses};
+                newCourseList[data.courseID] = data.courseName;
+                return newCourseList;
+            });
+            activateCourseForm(false);
+        } else {
+            mounted.current = true;
+        }
+    }, [data])
 
 
     return (
@@ -53,7 +67,6 @@ const CourseForm = ({ setActiveCourse, setUserCourses, accessToken }) => {
                     onClick={e => {
                         e.preventDefault(); 
                         addNewCourse(newCourse);
-                        //history.replace('/profile/courseDetail');
                     }}>
                     ADD COURSE
                 </button>

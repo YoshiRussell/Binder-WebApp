@@ -20,9 +20,6 @@ const Profile = () => {
 
     console.log("PROFILE COMPONENT RENDER");
     
-    // ! TESTING VARIABLE THAT TRIGGERS MOCK DATABASE AND API
-    const testing = false;
-
     const { isAuthenticated, user, logout } = useAuth0();
     const { isLoading, 
             error, 
@@ -31,26 +28,26 @@ const Profile = () => {
             postRequest    
     } = useAPI();
 
-    //const [accessToken, setAccessToken] = useState(null);
     const mounted = useRef(false);
-
     const accessToken = useFetchAccessToken({ audience: 'http://localhost:8080/', scope: 'read:user_courses write:user_courses' });
     const [activeCourse, setActiveCourse] = useState(null);
     const [userCourses, setUserCourses] = useState({});
     const [courseFormActive, activateCourseForm] = useState(false);
 
-    // OnAccessTokenUpdate
+    // getRequest user data when access token is acquired
     useEffect(() => {
         (async() => {
             if (mounted.current) {
-                //const cDB = new MyFetchAPI('http://localhost:8080', user.sub, accessToken);
-                //setCloudDB(cDB);
                 getRequest(`${API_ENDPOINT}/api/user/courses/${user.sub}`, accessToken);
-                //setUserCourses(userCourses);
             }
             else mounted.current = true;
         })();
     },  [accessToken])
+
+
+    useEffect(() => {
+        setUserCourses(data);
+    }, [data])
 
 
     console.log("data: " + JSON.stringify(data));
@@ -66,7 +63,7 @@ const Profile = () => {
             { !(isLoading || error) &&
                 <div className="panel with-nav-tabs panel-default">
                     <CoursesNavbar 
-                    userCoursesData={data ? data : []}
+                    userCoursesData={userCourses ? userCourses : []}
                     activeCourse={activeCourse}
                     setActiveCourse={setActiveCourse} 
                     courseFormActive={courseFormActive}
@@ -76,6 +73,7 @@ const Profile = () => {
                             <CourseForm
                                 setActiveCourse={setActiveCourse}
                                 setUserCourses={setUserCourses}
+                                activateCourseForm={activateCourseForm}
                                 accessToken={accessToken} />
                         }
                         { activeCourse && 

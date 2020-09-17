@@ -15,15 +15,16 @@ const CourseDetail = ({ courseID, accessToken }) => {
     } = useAPI();
  
     useEffect(() => {
-        //let isCancelled = false;
-        //if (!isCancelled) getRequest(`${API_ENDPOINT}/api/courses/courseDetail/${courseID}`, accessToken);
         console.log("INSIDE COURSEDETAIL USEEFFECT");
         getRequest(`${API_ENDPOINT}/api/courses/courseDetail/${courseID}`, accessToken);
         return () => {
             console.log("course detail unmounted");
-            //isCancelled = true;
         }
     }, [courseID])
+
+    // function handleDeleteCourse() {
+
+    // }
 
     return (
         <div>

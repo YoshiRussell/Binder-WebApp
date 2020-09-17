@@ -99,7 +99,7 @@ router.route('/courses/:id').post(async (req, res) => {
             if (error) console.log("Error pushing new course pair: " + error);
             else {
                 console.log("Success pushing new course pair: " + success);
-                res.json(savedNewCourseDetail._id);
+                res.json(newCourse);
             }
         });
     } catch(error) {
