@@ -2,7 +2,6 @@ const router = require('express').Router();
 const Course = require('../models/course');
 
 router.route('/courseDetail/:id').get((req, res) => {
-    console.log("Inside get courseDetail");
     const courseId = req.params.id;
     (async() => {
         try {
@@ -15,11 +14,8 @@ router.route('/courseDetail/:id').get((req, res) => {
 });
 
 router.route('/courseDetail/:id').post((req, res) => {
-    console.log("Inside post courseDetail");
     const courseId = req.params.id;
     const { desc, tabName } = req.body;
-    console.log("tabName: " + tabName);
-    console.log("desc:" + desc);
 
     Course.findOneAndUpdate({ '_id': courseId, 'details.tab_name': tabName}, {
         $push: {'details.$.tab_list': desc}
@@ -30,4 +26,8 @@ router.route('/courseDetail/:id').post((req, res) => {
         }
     });
 });
+
+// TODO: Delete Course
+
+// TODO: Delete Course Details
 module.exports = router;

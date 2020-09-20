@@ -4,14 +4,15 @@ import { Redirect } from 'react-router-dom';
 import useAPI from '../hooks/useAPI';
 import { API_ENDPOINT } from '../index.js';
 
-const CourseDetail = ({ courseID, accessToken }) => {
+const CourseDetail = ({ userID, courseID, setUserCourses, setActiveCourse, accessToken }) => {
     console.log("COURSEDETAIL COMPONENT RENDER");
     console.log(`COURSEDETAIL ID: ${courseID}`);
     const {
         isLoading,
         error,
         data,
-        getRequest
+        getRequest,
+        postRequest
     } = useAPI();
  
     useEffect(() => {
@@ -22,9 +23,27 @@ const CourseDetail = ({ courseID, accessToken }) => {
         }
     }, [courseID])
 
-    // function handleDeleteCourse() {
+    function handleDeleteCourse() {
+        if(window.confirm("Are you sure you want to delete this course? There is no way to get this course's information back.")) {
+            // delete course from database
+            const reqBody = { courseID };
+            postRequest(`${API_ENDPOINT}/api/user/courses/delete/${userID}`, reqBody, false, accessToken);
 
-    // }
+            // delete ui representation of this course
+            setUserCourses(prevUserCourses => {
+                const updatedUserCourses = {};
+                Object.entries(prevUserCourses).map(entry => {
+                    if (entry[0] !== courseID) updatedUserCourses[entry[0]] = entry[1];
+                });
+                return updatedUserCourses;
+            });
+
+            setActiveCourse(null);
+            
+        } else {
+            return;
+        }
+    }
 
     return (
         <div>
@@ -44,6 +63,7 @@ const CourseDetail = ({ courseID, accessToken }) => {
                             />
                         )
                     })}
+                    <button onClick={() => handleDeleteCourse()}>Delete this Course</button>
                 </div>
             }
         </div>

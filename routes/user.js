@@ -2,32 +2,6 @@ const router = require('express').Router();
 const User = require('../models/users');
 const Course = require('../models/course');
 
-// router.route('/courses/:id').get((req, res) => {
-
-//     const userID = req.params.id;
-//     User.find({ userID })
-//         .then(user => {
-
-//             // if user data does not exist yet 
-//             if (!user) {
-//                 const courses = [];
-//                 const newUser = new User({
-//                     user_id: userID,
-//                     courses
-//                 });
-                
-//                 newUser.save()
-//                     .then(user => {
-//                         res.json(courses);
-//                     })
-//                     .catch(error => console.log("error saving new User in DB"));
-//             } else {
-//                 res.json(user.courses)
-//             }
-//         })
-//         .catch(error => console.log("error finding new user in DB"));
-// });
-
 
 router.route('/courses/:id').get((req, res) => {
     console.log("Inside getCourses route");
@@ -106,5 +80,28 @@ router.route('/courses/:id').post(async (req, res) => {
         console.log("Error adding course");
     }
 });
+
+router.route('/courses/delete/:id').post(async (req, res) => {
+
+    const userID = req.params.id;
+    const { courseID } = req.body;
+
+    try {
+        User.findOneAndUpdate({ user_id: userID }, {
+            $pull: { 'courses': { 'courseID': courseID } }
+        }, (error, success) => {
+            if (error) console.log("Error pulling course from course list");
+            else console.log("Success pulling course from course list");
+        });
+
+        Course.deleteOne({ 'id': courseID }, (error, success) => {
+            if (error) console.log("Error deleting Course Model that matches course ID");
+            else console.log("Successfully deleted Course Model that matches course ID");
+        });
+
+    } catch(error) {
+        console.log("Failed to delete course from either User model or Course model");
+    }
+})
 
 module.exports = router;

@@ -23,13 +23,6 @@ const CourseForm = ({ setActiveCourse, setUserCourses, activateCourseForm, acces
             try {
                 const reqBody = { courseName: newCourseName };
                 await postRequest(`${API_ENDPOINT}/api/user/courses/${user.sub}`, reqBody, true, accessToken);
-                // console.log("NEW COURSE DATA: " + JSON.stringify(data));
-                // setActiveCourse(data);
-                // setUserCourses(prevUserCourses => {
-                //     const newCourseList = {...prevUserCourses};
-                //     newCourseList[data] = newCourseName;
-                //     return newCourseList;
-                // });
             } catch(error) {
                 console.log("Error getting new courseID");
             }

@@ -20,21 +20,16 @@ const Profile = () => {
 
     console.log("PROFILE COMPONENT RENDER");
     
+    //* hooks
     const { isAuthenticated, user, logout } = useAuth0();
-    const { isLoading, 
-            error, 
-            data, 
-            getRequest, 
-            postRequest    
-    } = useAPI();
-
+    const { isLoading, error, data, getRequest } = useAPI();
     const mounted = useRef(false);
     const accessToken = useFetchAccessToken({ audience: 'http://localhost:8080/', scope: 'read:user_courses write:user_courses' });
     const [activeCourse, setActiveCourse] = useState(null);
     const [userCourses, setUserCourses] = useState({});
     const [courseFormActive, activateCourseForm] = useState(false);
 
-    // getRequest user data when access token is acquired
+    //* access token received side effect
     useEffect(() => {
         (async() => {
             if (mounted.current) {
@@ -44,14 +39,13 @@ const Profile = () => {
         })();
     },  [accessToken])
 
-
+    //* data received side effect
     useEffect(() => {
         setUserCourses(data);
+        console.log(data);
     }, [data])
 
-
-    console.log("data: " + JSON.stringify(data));
-
+    //* View
     return (
         <div>
             { isLoading && 
@@ -78,7 +72,10 @@ const Profile = () => {
                         }
                         { activeCourse && 
                             <CourseDetail
+                                userID={user.sub}
                                 courseID={activeCourse}
+                                setUserCourses={setUserCourses}
+                                setActiveCourse={setActiveCourse}
                                 accessToken={accessToken} />
                         }
                     </div>         
