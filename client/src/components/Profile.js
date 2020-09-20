@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import { API_ENDPOINT, REACT_APP_URI } from '../index.js';
-import { BrowserRouter as Router, Switch, Route, useHistory, useRouteMatch } from 'react-router-dom';
 import CoursesNavbar from './CoursesNavbar';
 import CourseDetail from './CourseDetail';
 import CourseForm from './CourseForm';
-import MyFetchAPI from '../classes/MyFetchAPI';
-import MockMyFetchAPI from '../mock/MockMyFetchAPI';
 import useFetchAccessToken from '../hooks/useFetchAccessToken';
 import useAPI from '../hooks/useAPI';
 

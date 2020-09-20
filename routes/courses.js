@@ -27,7 +27,16 @@ router.route('/courseDetail/:id').post((req, res) => {
     });
 });
 
-// TODO: Delete Course
+router.route('/courseDetail/delete/:id').post((req, res) => {
+    const courseId = req.params.id;
+    const { tabList, tabName } = req.body;
 
-// TODO: Delete Course Details
+    Course.findOneAndUpdate({ '_id': courseId, 'details.tab_name': tabName}, {
+        'details.$.tab_list' : tabList
+    }, (error, success) => {
+        if (error) console.log("Error deleting specific task");
+        else console.log("Success deleting specific task");
+    });
+});
+
 module.exports = router;

@@ -31,10 +31,27 @@ const Tab = ({ courseID, tab_name, tab_list, accessToken }) => {
         }   
     }
 
+    // * delete specific task
+    function handleDeleteTask(indexToDelete) {
+        
+
+        // update tab list ui and update database after task delete
+        updateTabList(prevTabList => {
+            const updatedTabList = prevTabList.filter((desc, index) => index !== indexToDelete);
+            const reqBody = { tabList: updatedTabList, tabName: tab_name};
+            postRequest(`${API_ENDPOINT}/api/courses/courseDetail/delete/${courseID}`, reqBody, false, accessToken);
+            return updatedTabList;
+        });
+    }
 
     // * create the tab list view
     const tabListView = tabList.map((desc, index) => {
-        return <li key={index}>{desc}</li>
+        return (
+            <li key={index}>
+                {desc}
+                <button onClick={() => handleDeleteTask(index)}>DELETE TASK</button>
+            </li>
+        )
     });
 
 
