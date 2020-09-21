@@ -44,7 +44,7 @@ const Profile = () => {
 
     //* View
     return (
-        <div>
+        <>
             { isLoading && 
                 <div>Loading Data</div>
             }
@@ -81,7 +81,7 @@ const Profile = () => {
             User email: {user.email} <br />
             Authenticated: {isAuthenticated ? 'Yes' : 'No'} <br />
             <button onClick={() => logout({ returnTo: window.location.origin })}>Log Out</button>
-        </div>
+        </>
     )
 }
 

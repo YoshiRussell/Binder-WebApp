@@ -18,7 +18,7 @@ const CoursesNavbar = ({ userCoursesData, activeCourse, setActiveCourse, courseF
                         setActiveCourse(courseID);
                     }}
                     className={courseID === activeCourse ? "active" : ""}
-                    style={courseID ===  activeCourse ? {backgroundColor: 'white'} : null }
+                    style={courseID ===  activeCourse ? {backgroundColor: 'lightsteelblue', color: 'white'} : null }
                     to={`${url}/courseDetail`}>
                     {userCoursesData[courseID]}
                 </Link>

@@ -34,7 +34,6 @@ const Tab = ({ courseID, tab_name, tab_list, accessToken }) => {
     // * delete specific task
     function handleDeleteTask(indexToDelete) {
         
-
         // update tab list ui and update database after task delete
         updateTabList(prevTabList => {
             const updatedTabList = prevTabList.filter((desc, index) => index !== indexToDelete);
@@ -63,7 +62,7 @@ const Tab = ({ courseID, tab_name, tab_list, accessToken }) => {
                 <h3>{tab_name}</h3>
             </button>
             {showList ? (
-                <div>
+                <div className="opened-tab">
                     {tabList.length > 0 ? (<ul>{tabListView}</ul>) : (<p>No tasks yet o:</p>)}  
                     <div className="add-task-row">
                         <input 
