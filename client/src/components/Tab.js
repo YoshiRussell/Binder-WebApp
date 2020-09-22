@@ -47,8 +47,10 @@ const Tab = ({ courseID, tab_name, tab_list, accessToken }) => {
     const tabListView = tabList.map((desc, index) => {
         return (
             <li key={index}>
-                {desc}
-                <button onClick={() => handleDeleteTask(index)}>DELETE TASK</button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
+                    <p style={{ width: '70%' }}>{desc}</p>
+                    <button onClick={() => handleDeleteTask(index)}>DELETE TASK</button>
+                </div>
             </li>
         )
     });

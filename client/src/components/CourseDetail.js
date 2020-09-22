@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Tab from './Tab';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useRouteMatch } from 'react-router-dom';
 import useAPI from '../hooks/useAPI';
 import { API_ENDPOINT } from '../index.js';
 
@@ -14,7 +14,8 @@ const CourseDetail = ({ userID, courseID, setUserCourses, setActiveCourse, acces
         getRequest,
         postRequest
     } = useAPI();
- 
+    
+    
     useEffect(() => {
         console.log("INSIDE COURSEDETAIL USEEFFECT");
         getRequest(`${API_ENDPOINT}/api/courses/courseDetail/${courseID}`, accessToken);
@@ -37,9 +38,7 @@ const CourseDetail = ({ userID, courseID, setUserCourses, setActiveCourse, acces
                 });
                 return updatedUserCourses;
             });
-
-            setActiveCourse(null);
-            
+            setActiveCourse(null);  
         } else {
             return;
         }
@@ -49,6 +48,17 @@ const CourseDetail = ({ userID, courseID, setUserCourses, setActiveCourse, acces
         <div>
             { error &&
                 <h3>Error loading Course's data</h3>
+            }
+            { isLoading &&
+                <div className="tab-pane active">
+                    <div className="tab_container">
+                        <button className="tab_name_off"><h3>HOMEWORK</h3></button>
+                    </div>
+                    <div className="tab_container">
+                        <button className="tab_name_off"><h3>QUIZZES/TESTS</h3></button>
+                    </div>
+                    <button>Delete this Course</button>
+                </div>
             }
             { !(isLoading || error) && 
                 <div className="tab-pane active">
@@ -62,7 +72,8 @@ const CourseDetail = ({ userID, courseID, setUserCourses, setActiveCourse, acces
                                 accessToken={accessToken}
                             />
                         )
-                    })}
+                    })
+                    }
                     <button onClick={() => handleDeleteCourse()}>Delete this Course</button>
                 </div>
             }

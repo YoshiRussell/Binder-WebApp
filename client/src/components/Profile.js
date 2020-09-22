@@ -45,12 +45,6 @@ const Profile = () => {
     //* View
     return (
         <>
-            { isLoading && 
-                <div>Loading Data</div>
-            }
-            { error && 
-                <div>There was some error</div>
-            }
             { !(isLoading || error) &&
                 <div className="panel with-nav-tabs panel-default">
                     <CoursesNavbar 
