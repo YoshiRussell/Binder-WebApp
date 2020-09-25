@@ -11,6 +11,7 @@ const useFetchAccessToken = ({ audience, scope }) => {
     const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
+        console.log("Inside getAccessTokenSilently useEffect");
         getAccessTokenSilently({audience, scope})
             .then(token => {
                 setAccessToken(token);

@@ -65,7 +65,7 @@ const Tab = ({ courseID, tab_name, tab_list, accessToken }) => {
             </button>
             {showList ? (
                 <div className="opened-tab">
-                    {tabList.length > 0 ? (<ul>{tabListView}</ul>) : (<p>No tasks yet o:</p>)}  
+                    {tabList.length > 0 ? (<ul>{tabListView}</ul>) : (<p>You currently have no tasks.</p>)}  
                     <div className="add-task-row">
                         <input 
                             type="text"

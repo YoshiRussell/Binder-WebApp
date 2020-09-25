@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Tab from './Tab';
-import { Redirect, useRouteMatch } from 'react-router-dom';
 import useAPI from '../hooks/useAPI';
 import { API_ENDPOINT } from '../index.js';
 
 const CourseDetail = ({ userID, courseID, setUserCourses, setActiveCourse, accessToken }) => {
-    console.log("COURSEDETAIL COMPONENT RENDER");
-    console.log(`COURSEDETAIL ID: ${courseID}`);
+    
     const {
         isLoading,
         error,
@@ -17,11 +15,7 @@ const CourseDetail = ({ userID, courseID, setUserCourses, setActiveCourse, acces
     
     
     useEffect(() => {
-        console.log("INSIDE COURSEDETAIL USEEFFECT");
         getRequest(`${API_ENDPOINT}/api/courses/courseDetail/${courseID}`, accessToken);
-        return () => {
-            console.log("course detail unmounted");
-        }
     }, [courseID])
 
     function handleDeleteCourse() {
@@ -72,8 +66,7 @@ const CourseDetail = ({ userID, courseID, setUserCourses, setActiveCourse, acces
                                 accessToken={accessToken}
                             />
                         )
-                    })
-                    }
+                    })}
                     <button onClick={() => handleDeleteCourse()}>Delete this Course</button>
                 </div>
             }

@@ -28,12 +28,10 @@ const Profile = () => {
 
     //* access token received side effect
     useEffect(() => {
-        (async() => {
             if (mounted.current) {
                 getRequest(`${API_ENDPOINT}/api/user/courses/${user.sub}`, accessToken);
             }
             else mounted.current = true;
-        })();
     },  [accessToken])
 
     //* data received side effect

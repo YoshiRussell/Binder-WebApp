@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 import { Link, useRouteMatch } from 'react-router-dom';
 
 const CoursesNavbar = ({ userCoursesData, activeCourse, setActiveCourse, courseFormActive, activateCourseForm }) => {
+    
     console.log("COURSENAVBAR COMPONENT RENDER");
-
 
     const { url } = useRouteMatch();
 
@@ -25,8 +25,7 @@ const CoursesNavbar = ({ userCoursesData, activeCourse, setActiveCourse, courseF
             </li>
         )
     });
-
-    
+   
     return (
         <div className="panel-heading">
             <ul className="nav nav-tabs">
